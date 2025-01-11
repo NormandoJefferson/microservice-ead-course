@@ -94,7 +94,7 @@ public class LessonController {
             SpecificationTemplate.LessonSpec lessonSpec,
             @PageableDefault(page = 0, size = 10, sort = "lessonId", direction = Sort.Direction.ASC) Pageable pageable) {
         Page<LessonModel> lessonModelPage = lessonService.findAllByModule(
-                SpecificationTemplate.lessonCourseId(moduleId).and(lessonSpec), pageable);
+                SpecificationTemplate.lessonModuleId(moduleId).and(lessonSpec), pageable);
         return ResponseEntity.status(HttpStatus.OK).body(lessonModelPage);
     }
 

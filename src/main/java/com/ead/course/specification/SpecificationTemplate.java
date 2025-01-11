@@ -25,6 +25,7 @@ public class SpecificationTemplate {
     })
     public interface CourseSpec extends Specification<CourseModel> {}
 
+
     @Spec(path = "title", spec = Like.class)
     public interface ModuleSpec extends Specification<ModuleModel> {}
 
@@ -41,20 +42,20 @@ public class SpecificationTemplate {
         };
     }
 
-    public static Specification<LessonModel> lessonCourseId(final UUID moduleId) {
+    public static Specification<LessonModel> lessonModuleId(final UUID moduleId) {
         return (root, query, cb) -> {
             query.distinct(true);
             Root<LessonModel> lesson = root;
             Root<ModuleModel> module = query.from(ModuleModel.class);
-            Expression<Collection<LessonModel>> modulesLessons = module.get("lessons");
-            return cb.and(cb.equal(module.get("moduleId"), moduleId), cb.isMember(lesson, modulesLessons));
+            Expression<Collection<LessonModel>> moduleLessons = module.get("lessons");
+            return cb.and(cb.equal(module.get("moduleId"), moduleId), cb.isMember(lesson, moduleLessons));
         };
     }
 
     public static Specification<CourseModel> courseUserId(final UUID userId) {
         return (root, query, cb) -> {
-          query.distinct(true);
-            Join<CourseModel,  CourseUserModel> courseProd = root.join("courseUsers");
+            query.distinct(true);
+            Join<CourseModel, CourseUserModel> courseProd = root.join("coursesUsers");
             return cb.equal(courseProd.get("userId"), userId);
         };
     }
