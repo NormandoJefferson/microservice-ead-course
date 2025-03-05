@@ -29,21 +29,19 @@ import java.util.UUID;
 public class CourseUserController {
 
     @Autowired
-    AuthUserClient courseClient;
+    AuthUserClient authUserClient;
 
     @Autowired
     CourseService courseService;
 
     @Autowired
     CourseUserService courseUserService;
-    @Autowired
-    private AuthUserClient authUserClient;
 
     @GetMapping("/courses/{courseId}/users")
     public ResponseEntity<Page<UserDto>> getAllUsersByCourse(
             @PageableDefault(page = 0, size = 10, sort = "userId", direction = Sort.Direction.ASC) Pageable pageable,
             @PathVariable(value = "courseId") UUID courseId) {
-        return ResponseEntity.status(HttpStatus.OK).body(courseClient.getAllUsersByCourse(courseId, pageable));
+        return ResponseEntity.status(HttpStatus.OK).body(authUserClient.getAllUsersByCourse(courseId, pageable));
     }
 
     @PostMapping("/courses/{courseId}/users/subscription")
