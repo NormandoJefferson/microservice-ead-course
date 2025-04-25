@@ -20,4 +20,9 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll(spec, pageable);
     }
 
+    @Override
+    public UserModel save(UserModel userMode) {
+        return userRepository.save(userMode);
+    }
+
 }
