@@ -26,14 +26,23 @@ public class UserConsumer {
     private UserService userService;
 
     /**
-     * Escuta eventos da fila de usuários e executa ações com base no tipo de evento recebido.
+     * Consome eventos da fila de usuários e executa operações específicas conforme o tipo de ação recebido.
      * <p>
-     * Atualmente, trata apenas eventos do tipo {@code CREATE}, convertendo o {@link UserEventDto}
-     * recebido em um {@link UserModel} e salvando-o no banco de dados via {@link UserService}.
-     * <p>
-     * A fila e o exchange são configurados via propriedades externas.
+     * Escuta eventos publicados em um exchange do tipo {@code FANOUT},
+     * configurado via propriedades externas, e trata os seguintes tipos de ação:
+     * <ul>
+     *     <li>{@code CREATE} - Converte o {@link UserEventDto} recebido em um {@link UserModel}
+     *     e persiste o novo usuário no banco de dados utilizando o {@link UserService}.</li>
+     *     <li>{@code UPDATE} - Converte o {@link UserEventDto} em um {@link UserModel}
+     *     e atualiza os dados do usuário existente no banco de dados via {@link UserService}.</li>
+     *     <li>{@code DELETE} - Remove o usuário identificado pelo ID fornecido no {@link UserEventDto}
+     *     utilizando o {@link UserService}.</li>
+     * </ul>
      *
-     * @param userEventDto o objeto contendo os dados do usuário e o tipo de ação a ser processada
+     * A comunicação com a fila e o exchange é realizada através de configuração externa
+     * (valores definidos nas propriedades da aplicação).
+     *
+     * @param userEventDto o DTO contendo as informações do usuário e o tipo de ação a ser processada
      */
     @RabbitListener(bindings = @QueueBinding(
             value = @Queue(value = "${ead.broker.queue.userEventQueue.name}", durable = "true"),
@@ -41,10 +50,14 @@ public class UserConsumer {
             ignoreDeclarationExceptions = "true")
     ))
     public void listenUserEvent(@Payload UserEventDto userEventDto) {
-        var userMode = userEventDto.convertToUserModel();
+        var userModel = userEventDto.convertToUserModel();
         switch (ActionType.valueOf(userEventDto.getActionType())) {
             case CREATE:
-                userService.save(userMode);
+            case UPDATE:
+                userService.save(userModel);
+                break;
+            case DELETE:
+                userService.delete(userEventDto.getUserId());
                 break;
         }
     }
