@@ -6,7 +6,6 @@ import com.ead.course.models.ModuleModel;
 import com.ead.course.repositories.CourseRepository;
 import com.ead.course.repositories.LessonRepository;
 import com.ead.course.repositories.ModuleRepository;
-import com.ead.course.repositories.UserRepository;
 import com.ead.course.services.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -60,6 +59,27 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Page<CourseModel> findAll(Specification<CourseModel> courseSpec, Pageable pageable) {
         return courseRepository.findAll(courseSpec, pageable);
+    }
+
+    @Override
+    public boolean existsByCourseAndUser(UUID courseId, UUID userId) {
+        return courseRepository.existsByCourseIdAndUserId(courseId, userId);
+    }
+
+    /**
+     * Insere uma nova associação entre um curso e um usuário na tabela {@code tb_courses_users}.
+     * <p>
+     * Executa uma consulta SQL nativa para adicionar um registro na tabela de associação entre cursos
+     * e usuários. É utilizado para registrar a matrícula ou vinculação de um usuário a um curso específico.
+     * </p>
+     *
+     * @param courseId o identificador do curso
+     * @param userId   o identificador do usuário
+     */
+    @Transactional
+    @Override
+    public void saveSubscriptionUserInCourse(UUID courseId, UUID userId) {
+        courseRepository.saveCourseUser(courseId, userId);
     }
 
 }

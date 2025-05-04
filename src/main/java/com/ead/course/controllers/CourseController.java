@@ -57,6 +57,21 @@ public class CourseController {
         return ResponseEntity.status(HttpStatus.OK).body(courseModelOptional.get());
     }
 
+    /**
+     * Endpoint para salvar um novo curso.
+     * <p>
+     * Recebe um objeto {@link CourseDto} via {@link @RequestBody}, valida os dados com o
+     * {@link #courseValidator}, e caso não haja erros de validação, converte o DTO para um modelo
+     * {@link CourseModel}, popula os campos de data de criação e atualização e, finalmente, persiste o curso
+     * no banco de dados através do {link courseService}. Caso haja erros de validação, a resposta retorna um
+     * erro {@link HttpStatus#BAD_REQUEST} com detalhes sobre os erros.
+     * </p>
+     *
+     * @param courseDto o objeto de transferência de dados contendo as informações do curso a ser salvo
+     * @param errors    objeto que armazena os erros de validação que podem ocorrer durante o processo
+     *
+     * @return uma {@link ResponseEntity} contendo o status HTTP e o curso salvo ou os erros de validação
+     */
     @PostMapping
     public ResponseEntity<Object> saveCourse(@RequestBody CourseDto courseDto, Errors errors) {
         log.debug("POST saveCourse courseDto received {} ", courseDto.toString());
