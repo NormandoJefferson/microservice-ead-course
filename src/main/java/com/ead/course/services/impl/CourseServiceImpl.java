@@ -30,6 +30,23 @@ public class CourseServiceImpl implements CourseService {
     @Autowired
     LessonRepository lessonRepository;
 
+    /**
+     * Exclui um curso específico juntamente com todos os seus módulos, aulas associadas
+     * e relacionamentos entre curso e usuários.
+     * <p>
+     * O processo de exclusão é feito de forma encadeada e segura, removendo:
+     * <ul>
+     *     <li>Todas as lições de cada módulo pertencente ao curso</li>
+     *     <li>Todos os módulos do curso</li>
+     *     <li>Relacionamentos entre o curso e os usuários</li>
+     *     <li>O próprio curso</li>
+     * </ul>
+     * É executado dentro de uma transação, garantindo que todas as operações
+     * sejam atômicas — ou todas são realizadas com sucesso, ou nenhuma alteração é persistida
+     * em caso de falha.
+     *
+     * @param courseModel o curso a ser excluído, incluindo seus módulos e lições relacionadas
+     */
     @Transactional
     @Override
     public void delete(CourseModel courseModel) {
@@ -43,6 +60,7 @@ public class CourseServiceImpl implements CourseService {
             }
             moduleRepository.deleteAll(moduleModelList);
         }
+        courseRepository.deleteCourseUserByCourse(courseModel.getCourseId());
         courseRepository.delete(courseModel);
     }
 

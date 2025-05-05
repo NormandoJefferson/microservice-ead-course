@@ -35,8 +35,8 @@ public class UserConsumer {
      *     e persiste o novo usuário no banco de dados utilizando o {@link UserService}.</li>
      *     <li>{@code UPDATE} - Converte o {@link UserEventDto} em um {@link UserModel}
      *     e atualiza os dados do usuário existente no banco de dados via {@link UserService}.</li>
-     *     <li>{@code DELETE} - Remove o usuário identificado pelo ID fornecido no {@link UserEventDto}
-     *     utilizando o {@link UserService}.</li>
+     *     <li>{@code DELETE} - Remove o usuário identificado pelo ID fornecido no {@link UserEventDto},
+     *  *     incluindo todos os vínculos com cursos, utilizando o {@link UserService}.</li>
      * </ul>
      *
      * A comunicação com a fila e o exchange é realizada através de configuração externa
