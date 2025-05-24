@@ -32,7 +32,7 @@ logging:
 ead:
   api:
     url:
-      authuser: 'http://ead-authuser-service/ead-authuser'
+      authuser: 'http://ead-authuser-service/ead-authuser' #Id/nome eureka de authuser (ead-authuser-service).
   broker:
     exchange:
       userEventExchange: ead.userevent
